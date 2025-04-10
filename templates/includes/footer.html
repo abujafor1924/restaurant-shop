@@ -45,8 +45,182 @@
 <!-- Footer End -->
 </div>
 <!-- Modal Popup End -->
-<script src={% static "assets/js/scripts.js" %}></script>
-<script src={% static "assets/js/functions.js" %}></script>
+<script src="{% static 'assets/js/scripts.js' %}"></script>
+<script src="{% static 'assets/js/functions.js' %}"></script>
+
+<script>
+     $(document).ready(function () {
+          const login_url = "{% url 'login' %}";
+       // Add to cart
+       $('.add_to_cart').on('click', function (e) {
+         e.preventDefault();
+         var food_id = $(this).attr('data-id');
+         var url = $(this).attr('data-url');
+         $.ajax({
+           type: 'GET',
+           url: url,
+           
+           success: function (response) {
+             console.log("Success Response:", response);
+             if(response.status == 'login required'){
+                  console.log(response);
+                 
+                  Swal.fire({
+                    title: response.message,
+                    //text: 'You need to login to continue.',
+                    icon: 'info',
+                  //  confirmButtonText: 'Login'
+                  }).then((result)=>{
+                       window.location=login_url
+                  })
+             }else if(response.status == 'Failed'){
+                  console.log(response);
+             }else{
+               $('#cart_counter').html(response.cart_count['cart_count']);
+               $('#qty-' + food_id).html(response.qty);
+
+applyCartAmount(
+     response.cart_amount['subtotal'],
+     response.cart_amount['tax'],
+     response.cart_amount['grand_total']
+);
+             }
+             
+           },
+           error: function (xhr, status, error) {
+             console.error("Error:", error);
+           }
+         });
+       });
+   
+       // Update item quantity on load
+       $('.item_qty').each(function () {
+         var the_id = $(this).attr('id');
+         var qty = $(this).attr('data-qty');
+         $('#' + the_id).html(qty);
+       });
+   
+       // Decrease cart
+       $('.decrease_cart').on('click', function (e) {
+         e.preventDefault();
+         var food_id = $(this).attr('data-id');
+         var url = $(this).attr('data-url');
+         var cart_id = $(this).attr('id');
+         $.ajax({
+           type: 'GET',
+           url: url,
+          
+           success: function (response) {
+             console.log("Success Response:", response);
+             if(response.status == 'login required'){
+                  console.log(response);
+                  Swal.fire({
+                    title: response.message,
+                    //text: 'You need to login to continue.',
+                    icon: 'info',
+                  //  confirmButtonText: 'Login'
+                  }).then((result)=>{
+                       window.location=login_url
+                  })
+             }else if(response.status == 'Failed'){
+                  console.log(response);     
+             }else{
+               $('#cart_counter').html(response.cart_count['cart_count']);
+               $('#qty-' + food_id).html(response.qty);
+
+if (window.location.pathname == '/cart/') {
+     removeCartItem(response.qty,cart_id);
+
+     checkEmtyCart();
+     applyCartAmount(
+     response.cart_amount['subtotal'],
+     response.cart_amount['tax'],
+     response.cart_amount['grand_total']
+);
+}
+
+              
+             }
+             
+           },
+           error: function (xhr, status, error) {
+             console.error("Error:", error);
+           }
+         });
+       });
+
+       //delete cart item
+       $('.delete_cart').on('click', function (e) {
+         e.preventDefault();
+         var cart_id = $(this).attr('data-id');
+         var url = $(this).attr('data-url');
+         $.ajax({
+           type: 'GET',
+           url: url,
+          
+           success: function (response) {
+             console.log("Success Response:", response);
+             if(response.status == 'login required'){
+                  console.log(response);
+                  Swal.fire({
+                    title: response.message,
+                    //text: 'You need to login to continue.',
+                    icon: 'info',
+                  //  confirmButtonText: 'Login'
+                  }).then((result)=>{
+                       window.location=login_url
+                  })     
+             }else if(response.status == 'Failed'){
+                  console.log(response);
+             }else{
+               $('#cart_counter').html(response.cart_count['cart_count']);
+               swal.fire( response.status, response.message,'Success');
+               removeCartItem(0,cart_id);
+               checkEmtyCart();
+               applyCartAmount(
+     response.cart_amount['subtotal'],
+     response.cart_amount['tax'],
+     response.cart_amount['grand_total']
+);
+             }
+             
+           },
+           error: function (xhr, status, error) {
+             console.error("Error:", error);
+           }
+         });
+       });
+
+//delete the cart items auto reload
+function removeCartItem(cartItemQty,cart_id){
+    
+     if (cartItemQty <= 0){
+          document.getElementById("cart-item-" + cart_id).remove();
+     }
+}
+
+
+//check the cart is empty or not
+function checkEmtyCart(){
+     var cartCounter = document.getElementById("cart_counter").innerHTML;
+     if (cartCounter == 0){
+          document.getElementById("cart-empty").style.display = "block";
+     }
+}
+
+//apply cart amount
+function applyCartAmount(subtotal,tax,grand_total){
+     if (window.location.pathname == '/cart/') {
+          $('#subtotal').html(subtotal);
+          $('#tax').html(tax);
+          $('#total').html(grand_total);
+     }
+    
+}
+
+     });
+   </script>
+   
 </body>
 
 </html>

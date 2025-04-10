@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  {% include 'includes/alert.html' %}
+
+  <!-- Main Section Start -->
+  <div class="main-section">
+    {% include 'includes/cover.html' %}
+    <div class="page-section account-header buyer-logged-in">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+            {% include 'includes/v_sidebar.html' %}
+          </div>
+          <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+            <div class="user-dashboard loader-holder">
+              <div class="user-holder">
+                <h1>Build Your FoodMenu</h1>
+                <hr />
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <h6>Add New Foods</h6>
+                  </div>
+                  <div>
+                    <button class="btn btn-secondary" onclick="history.back()">back</button>
+                  </div>
+                </div>
+
+                <form action="{% url 'add_fooditem' %}" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="category_name">Foot Title</label>
+                    {{ form.food_title }}
+                  </div>
+                  <div class="form-group">
+                    <label for="category">Category select</label>
+                    {{ form.category }}
+                  </div>
+                  <div class="form-group">
+                    <label for="description">Product Description</label>
+                    {{ form.description }}
+                  </div>
+                  <div class="form-group">
+                    <label for="price">Product Price</label>
+                    {{ form.price }}
+                  </div>
+                  <div class="form-group">
+                    <label for="image">Upload Product Image</label>
+                    {{ form.image}}
+                  </div>
+
+                  <div class="form-group">
+                    <label for="category_description">Is Avilable</label>
+                    {{ form.is_available }}
+                  </div> 
+                  {% comment %} {{ form.as_p }} {% endcomment %}
+                  {% for field in form %}
+                    {% if field.errors %}
+                      {% for error in field.errors %}
+                        <li style="color: red;">{{ error }}</li>
+                      {% endfor %}
+                    {% endif %}
+                  {% endfor %}
+
+                  <button type="submit" class="btn btn-primary">Create</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Main Section End -->
+{% endblock %}

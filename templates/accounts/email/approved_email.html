@@ -1,0 +1,12 @@
+
+{% autoescape off %}
+     Hi {{ user.first_name }},
+
+
+     {%if is_approved%}
+     congrats your restaurant has been approved
+     {%else%}
+     we're sorry your restaurant has been disapproved. contact for more details
+     {%endif%}
+           
+{% endautoescape %}

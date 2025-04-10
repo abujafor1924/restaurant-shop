@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     # selfs apps
     'accounts',
     'vendor',
+    'menu',
+    'marketplace',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +69,11 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'accounts.context_processors.get_vendor',
+                'accounts.context_processors.get_google_api',
+                'marketplace.context_processors.get_cart_counter',
+                'marketplace.context_processors.get_cart_amount',
+                
             ],
         },
     },
@@ -148,12 +155,13 @@ MESSAGE_TAGS = {
 # normal domain smtp set
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"  
-EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_USE_TLS = False 
 EMAIL_USE_SSL = True  
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  
+DEFAULT_FROM_EMAIL = 'Food Online Restaurant <soyad.abu.jafor@gmail.com>'
 
 
 
+GOOGLE_API_KEY = config('GOOGLE_API_KEY')
