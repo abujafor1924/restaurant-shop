@@ -1,11 +1,12 @@
 from django.shortcuts import render,get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 from vendor.models import Vendor
 from menu.models import Category,FoodItem
 from django.db.models import Prefetch
 from .models import Cart
 from marketplace.context_processors import get_cart_counter,get_cart_amount
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 # Create your views here.
 def marketplace(request):
@@ -113,3 +114,28 @@ def delete_cart(request,cart_id):
                return JsonResponse({'status':'login required','message':'Please login to continue'})    
      else:
           return JsonResponse({'status':'Failed','message':'Invalid request'})  
+
+
+def search(request):
+    keyword = request.GET['keyword']  
+    address = request.GET['address']     
+    latitude = request.GET['lat']
+    longitude = request.GET['lng']
+    radius = request.GET['radius']
+    
+    fetch_vendor_food_items=FoodItem.objects.filter(food_title__icontains=keyword,is_available=True).values_list('vendor',flat=True)
+    print(fetch_vendor_food_items)
+    vendor=Vendor.objects.filter(Q(id__in=fetch_vendor_food_items)|Q(vendor_name__icontains=keyword),is_approved=True,user__is_active=True)    
+    # vendor = Vendor.objects.filter(vendor_name__icontains=keyword,is_approved=True,user__is_active=True)
+    vendor_count = vendor.count()
+    context = {
+        'vendor': vendor,  # এটা QuerySet, মানে iterable — for loop করা যাবে
+        'address': address,
+        'latitude': latitude,
+        'longitude': longitude,
+        'radius': radius,
+        'vendor_count': vendor_count
+    }
+   
+
+    return render(request, 'marketplace/listing.html', context)

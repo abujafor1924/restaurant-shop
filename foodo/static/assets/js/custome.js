@@ -33,6 +33,8 @@ function onPlaceChanged() {
 
     console.log("Latitude:", latitude);
     console.log("Longitude:", longitude);
+   
+
 
     document.getElementById("id_latitude").value = latitude;
     document.getElementById("id_longitude").value = longitude;

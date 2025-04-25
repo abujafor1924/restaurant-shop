@@ -59,6 +59,8 @@
                                                        <a href="{% url 'vendor_details' vendor.vendor_slug%}" class="viewmenu-btn text-color">View Menu</a>
                                                   </div>
                                              </li>
+                                             {% empty %}
+    <p>No vendors found.</p>
                                              {% endfor %}
                                         </ul>
                                    </div>
