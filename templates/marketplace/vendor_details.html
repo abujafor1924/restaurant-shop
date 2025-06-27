@@ -4,11 +4,7 @@
   <!-- Main Section Start -->
   <div class="main-section">
     <div class="page-section restaurant-detail-image-section"
-      style="background: url('{% if vendor.user_profile.cover_picture %}
-        {{ vendor.user_profile.cover_picture.url }}
-      {% else %}
-        {% static 'assets/images/default-cover.PNG' %}
-      {% endif %}') no-repeat scroll 0 0 / cover;">
+      style="background: url({{ vendor.user_profile.cover_picture.url }}) no-repeat scroll 0 0 / cover;">
       <!-- Container Start -->
       <div class="container">
         <!-- Row Start -->

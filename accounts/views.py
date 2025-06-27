@@ -75,8 +75,10 @@ def registerVendor(request):
           form=UserForm(request.POST)
           v_form=VendorForm(request.POST, request.FILES)
           if form.is_valid() and v_form.is_valid():
+               password = form.cleaned_data['password']
                user=form.save(commit=False)
                user.role=User.VENDOR
+               user.set_password(password)
                user.save()
                vendor=v_form.save(commit=False)
                vendor.user=user
